@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>차대번호 등록 내역 조회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --ci-blue: #2f6286; --ci-green: #72bf44; --ci-dark: #231f20; --ci-white: #ffffff; }
+  body, html { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f5f7fa; -webkit-user-select:none; user-select:none; }
+  
+  .inquiry-container { max-width: 500px; margin: 40px auto; padding: 30px; background-color: var(--ci-white); border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+  
+  .nav-header { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+  .home-btn { text-decoration: none; font-size: 13px; color: #888; font-weight: 500; display: flex; align-items: center; transition: color 0.3s; }
+  .home-btn:hover { color: var(--ci-blue); }
+
+  .inquiry-container h2 { text-align: center; margin-bottom: 10px; color: var(--ci-dark); font-size: 24px; font-weight: 800; }
+  .sub-text { text-align: center; margin-bottom: 25px; font-size: 13px; color: #666; line-height: 1.5; }
+  
+  .input-group { margin-bottom: 15px; }
+  .input-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: #555; }
+  .input-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; box-sizing: border-box; transition: border 0.3s; }
+  .input-group input:focus { border-color: var(--ci-blue); outline: none; }
+
+  .search-btn { 
+    width: 100%; padding: 15px; background-color: var(--ci-white); color: var(--ci-dark); border: 1px solid #ddd; 
+    border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 10px; transition: all 0.3s ease; 
+  }
+  .search-btn:hover { background-color: #f9fff9; border-color: var(--ci-green); color: var(--ci-green); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(114, 191, 68, 0.2); }
+
+  /* [NEW] 로딩 애니메이션 스타일 */
+  .loading-container { display: none; align-items: center; justify-content: center; margin-top: 15px; background-color: #f8f9fa; padding: 15px; border-radius: 8px; }
+  .spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--ci-blue); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; margin-right: 10px; }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  .loading-msg { font-size: 13px; font-weight: bold; color: var(--ci-dark); }
+
+  #resultContainer { margin-top: 30px; display: flex; flex-direction: column; gap: 25px; }
+  .result-card { background-color: #fff; border: 1px solid #eef2f5; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; transition: transform 0.2s; }
+  .result-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--ci-blue); }
+
+  .index-badge { position: absolute; top: 20px; right: 20px; background-color: #f0f4f8; color: var(--ci-blue); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
+  .status-badge { display: inline-block; padding: 5px 12px; background-color: var(--ci-green); color: white; font-size: 12px; font-weight: bold; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(114, 191, 68, 0.3); }
+  .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #eee; padding-bottom: 8px; font-size: 14px; }
+  .info-row:last-child { border-bottom: none; }
+  .info-label { color: #888; font-weight: 500; }
+  .info-value { color: var(--ci-dark); font-weight: 700; text-align: right; }
+
+  .warranty-section { margin-top: 15px; padding-top: 15px; border-top: 2px solid #eee; }
+  .warranty-title { font-size: 14px; font-weight: 800; color: var(--ci-dark); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+  .year-badge { font-size: 11px; background-color: var(--ci-dark); color: #fff; padding: 3px 8px; border-radius: 4px; font-weight: normal; }
+  .warranty-box { background-color: #f9f9f9; border: 1px solid #eee; border-radius: 6px; padding: 15px; }
+  .warranty-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; }
+  .w-item strong { color: var(--ci-blue); }
+  .receipt-note { grid-column: span 2; font-size: 11px; color: var(--ci-blue); font-weight: bold; margin-top: 8px; border-top: 1px solid #eee; padding-top: 8px; text-align: center; }
+  
+  .promo-link { display: block; margin-top: 15px; padding: 12px; background-color: #e67e22; color: white; text-align: center; text-decoration: none; font-weight: bold; border-radius: 6px; font-size: 14px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(230, 126, 34, 0); } 100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0); } }
+
+  .message-box { text-align: center; padding: 20px; color: #666; font-size: 14px; display: none; margin-top: 10px; }
+  .error-text { color: #e74c3c; font-weight: bold; }
+  .count-msg { text-align: center; font-size: 15px; font-weight: 800; color: var(--ci-dark); margin-bottom: 10px; display: none; padding: 10px; background-color: #f0f4f8; border-radius: 8px; }
+  .footer-logo { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px dashed #eee; }
+  .footer-logo img { height: 24px; opacity: 0.8; }
+  @media (max-width: 500px) { .inquiry-container { margin: 15px; padding: 20px; } }
+</style>
+</head>
+<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
+
+<div class="inquiry-container">
+  <div class="nav-header"><a href="./main.html" class="home-btn">🏠 메인으로</a></div>
+  <h2>정품 등록 조회</h2>
+  <div class="sub-text">등록된 <b>이름과 연락처</b>를 입력하시면<br>등록 내역과 차대번호를 확인하실 수 있습니다.</div>
+
+  <div class="input-group"><label>이름 (등록자명)</label><input type="text" id="nameInput" placeholder="예: 홍길동"></div>
+  <div class="input-group"><label>연락처</label><input type="text" id="phoneInput" placeholder="예: 010-0000-0000" maxlength="13"></div>
+
+  <button id="btnSearch" class="search-btn">내역 조회하기</button>
+  
+  <div id="loadingArea" class="loading-container">
+    <div class="spinner"></div>
+    <span class="loading-msg">데이터를 불러오는 중입니다... (약 3~5초 소요)</span>
+  </div>
+
+  <div id="msgBox" class="message-box"></div>
+  <div id="countMsg" class="count-msg"></div>
+  <div id="resultContainer"></div>
+
+  <div class="footer-logo"><img src="https://via.placeholder.com/150x40/231f20/ffffff?text=QUALI+SPORTS" alt="QUALI SPORTS"></div>
+</div>
+
+<script>
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbyy02EOo87dG4BWco1kbLO3O9BXwFSUKy-olHVwUim_E_07Azl5tl-e40UO1uBqoyeJ/exec"; 
+
+  document.addEventListener("DOMContentLoaded", function() {
+      const btnSearch = document.getElementById("btnSearch");
+      const nameInput = document.getElementById("nameInput");
+      const phoneInput = document.getElementById("phoneInput");
+      const resultContainer = document.getElementById("resultContainer");
+      const msgBox = document.getElementById("msgBox");
+      const countMsg = document.getElementById("countMsg");
+      const loadingArea = document.getElementById("loadingArea");
+
+      if(btnSearch) btnSearch.addEventListener("click", searchData);
+      if(phoneInput) phoneInput.addEventListener('input', function(e) {
+        let val = e.target.value.replace(/[^0-9]/g, '');
+        if (val.length > 3 && val.length <= 7) val = val.slice(0, 3) + "-" + val.slice(3); else if (val.length > 7) val = val.slice(0, 3) + "-" + val.slice(3, 7) + "-" + val.slice(7);
+        e.target.value = val.slice(0, 13);
+      });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const pName = urlParams.get('name');
+      const pPhone = urlParams.get('phone');
+      if (pName && pPhone) { nameInput.value = pName; phoneInput.value = pPhone; setTimeout(searchData, 300); }
+
+      function searchData() {
+        const name = nameInput.value.trim(); const phone = phoneInput.value.trim();
+        if (!name || !phone) return alert("이름과 연락처를 모두 입력해주세요.");
+
+        resultContainer.innerHTML = ""; countMsg.style.display = "none"; msgBox.style.display = "none"; 
+        loadingArea.style.display = "flex"; // 로딩 표시
+        btnSearch.disabled = true; btnSearch.style.backgroundColor = "#eee";
+
+        fetch(GAS_URL + "?type=search&name=" + encodeURIComponent(name) + "&phone=" + encodeURIComponent(phone))
+          .then(r => r.json()).then(res => {
+            loadingArea.style.display = "none"; // 로딩 숨김
+            btnSearch.disabled = false; btnSearch.style.backgroundColor = "var(--ci-white)";
+
+            if (res.status === "success") {
+              const list = res.data;
+              countMsg.style.display = "block"; countMsg.innerText = `총 ${list.length}건의 등록 내역이 있습니다.`;
+              list.forEach((item, index) => createCard(item, list.length - index, list.length));
+            } else { msgBox.style.display = "block"; msgBox.innerHTML = '<span class="error-text">❌ 일치하는 정보가 없습니다.</span>'; }
+          })
+          .catch(e => { 
+            loadingArea.style.display = "none"; btnSearch.disabled = false; btnSearch.style.backgroundColor = "var(--ci-white)";
+            msgBox.style.display = "block"; msgBox.innerHTML = '<span class="error-text">서버 통신 오류가 발생했습니다.</span>'; 
+          });
+      }
+
+      function createCard(data, index, total) {
+        const year = data.year || "2026";
+        const dateStr = formatDate(data.date);
+        let tFrame="2년", tMotor="1년", tCont="6개월";
+        if (year === "2025") { tFrame="1년"; tMotor="6개월"; tCont="6개월"; }
+
+        let promoHTML = "";
+        const regDate = new Date(data.date); const today = new Date();
+        const diffDays = Math.ceil(Math.abs(today - regDate) / (1000 * 60 * 60 * 24)); 
+        if (year === "2026" && data.isCredit && diffDays <= 14) {
+          const specialLink = "https://s.tosspayments.com/BnCSBz8YtCk";
+          promoHTML = `<a href="${specialLink}" target="_blank" class="promo-link">🎉 특별 구매 혜택 바로가기 (D-${15-diffDays})</a>`;
+        }
+
+        const cardHTML = `
+          <div class="result-card">
+            <span class="index-badge"># ${index} / ${total}</span>
+            <div style="text-align:center;"><span class="status-badge">✅ 차대번호 등록 완료</span></div>
+            <div class="info-row"><span class="info-label">제품명</span><span class="info-value">${data.product}</span></div>
+            <div class="info-row"><span class="info-label">차대번호</span><span class="info-value" style="color:#e74c3c;">${data.serial}</span></div>
+            <div class="info-row"><span class="info-label">등록일자</span><span class="info-value">${dateStr}</span></div>
+            <div class="info-row"><span class="info-label">구입매장</span><span class="info-value">${data.store}</span></div>
+            <div class="warranty-section">
+              <div class="warranty-title"><span>🛡️ 제품 보증 기간</span><span class="year-badge">${year}년형</span></div>
+              <div class="warranty-box">
+                <div class="warranty-grid">
+                  <div class="w-item"><strong>프레임:</strong> <span>${tFrame}</span></div>
+                  <div class="w-item"><strong>모터:</strong> <span>${tMotor}</span></div>
+                  <div class="w-item"><strong>컨트롤러:</strong> <span>${tCont}</span></div>
+                  <div class="receipt-note">💡 모든 보증은 영수증 날짜 기준입니다.</div>
+                </div>
+              </div>
+            </div>
+            ${promoHTML}
+          </div>
+        `;
+        resultContainer.insertAdjacentHTML('beforeend', cardHTML);
+      }
+      function formatDate(d) { if(!d) return "-"; const date = new Date(d); return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,'0')+"-"+String(date.getDate()).padStart(2,'0'); }
+  });
+  document.addEventListener('keydown', function(e) { if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) { e.preventDefault(); return false; } });
+</script>
+</body>
+</html>

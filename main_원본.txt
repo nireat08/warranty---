@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>퀄리스포츠 차대번호 등록 센터</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ci-blue: #2f6286;
+    --ci-green: #72bf44;
+    --ci-dark: #231f20;
+    --ci-white: #ffffff;
+  }
+
+  body, html { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f5f7fa; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
+  
+  .main-container {
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 50px 30px;
+    background-color: var(--ci-white);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(47, 98, 134, 0.1);
+    text-align: center;
+    border: 1px solid #eef2f5;
+  }
+
+  .main-title { font-size: 26px; font-weight: 800; color: var(--ci-dark); margin-bottom: 12px; }
+  .sub-title { font-size: 14px; color: #666; margin-bottom: 50px; line-height: 1.6; }
+
+  /* 버튼 스타일 */
+  .menu-btn {
+    display: block; width: 100%; padding: 22px 0; margin-bottom: 15px;
+    border-radius: 8px; text-decoration: none; transition: all 0.3s ease;
+    border: 1px solid transparent; position: relative; overflow: hidden;
+  }
+
+  /* 1. 정품 등록 버튼 (Blue) */
+  .btn-register { background-color: var(--ci-blue); color: var(--ci-white); }
+  .btn-register:hover { background-color: #244d6b; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(47, 98, 134, 0.3); }
+
+  /* 2. 조회 버튼 (White + Green Border) */
+  .btn-search { background-color: var(--ci-white); color: var(--ci-dark); border: 1px solid #ddd; }
+  .btn-search:hover { border-color: var(--ci-green); color: var(--ci-green); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(114, 191, 68, 0.2); }
+
+  .btn-title { display: block; font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+  .btn-desc { display: block; font-size: 12px; opacity: 0.9; font-weight: 400; }
+
+  /* 하단 로고 및 정보 */
+  .footer-area { margin-top: 50px; border-top: 1px solid #f0f0f0; padding-top: 30px; }
+  .footer-logo img { height: 30px; opacity: 0.8; margin-bottom: 15px; } /* 로고 높이 조절 */
+  .footer-info { font-size: 12px; color: #aaa; line-height: 1.5; }
+
+  @media (max-width: 500px) { .main-container { margin: 20px; padding: 40px 20px; } }
+</style>
+</head>
+<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
+
+<div class="main-container">
+  <div class="main-title">차대번호 등록 서비스</div>
+  <div class="sub-title">
+    퀄리스포츠 제품을 구매해 주셔서 감사합니다.<br>
+    최상의 서비스 제공을 위해 차대번호 등록을 진행해주세요.
+  </div>
+
+  <a href="./product_regist.html" class="menu-btn btn-register">
+    <span class="btn-title">📝 차대번호 등록하기</span>
+    <span class="btn-desc">새로 구매한 제품의 차대번호를 등록하고 보증 혜택을 받으세요</span>
+  </a>
+
+  <a href="./product_check.html" class="menu-btn btn-search">
+    <span class="btn-title">🔍 등록 내역 조회</span>
+    <span class="btn-desc">등록된 정보와 보증 기간을 확인합니다</span>
+  </a>
+
+  <div class="footer-area">
+    <div class="footer-logo">
+      <img src="https://via.placeholder.com/150x40/231f20/ffffff?text=QUALI+SPORTS" alt="QUALI SPORTS">
+    </div>
+    <div class="footer-info">
+      관련 문의: 퀄리스포츠 CS센터<br>
+      (운영시간: 평일 10:00 ~ 18:00)
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) {
+      e.preventDefault();
+      return false;
+    }
+  });
+</script>
+
+</body>
+</html>
