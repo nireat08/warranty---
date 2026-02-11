@@ -5,109 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>퀄리스포츠 제품 등록 시스템</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;800;900&display=swap" rel="stylesheet">
-<style>
-  :root { --ci-blue: #2f6286; --ci-green: #72bf44; --ci-dark: #231f20; --ci-white: #ffffff; }
-  body, html { margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; background-color: #f5f7fa; -webkit-user-select:none; user-select:none; }
-  .inquiry-container { max-width: 600px; margin: 40px auto; padding: 30px; background-color: var(--ci-white); border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); position: relative; }
-  .nav-header { display: flex; justify-content: flex-end; margin-bottom: 10px; }
-  .home-btn { text-decoration: none; font-size: 13px; color: #888; font-weight: 500; display: flex; align-items: center; transition: color 0.3s; }
-  .home-btn:hover { color: var(--ci-blue); }
-  h2 { text-align: center; margin-bottom: 25px; color: var(--ci-dark); font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
-  .required-mark { color: #e74c3c; margin-left: 3px; font-weight: bold; }
-  .optional-mark { color: #888; font-weight: normal; font-size: 12px; margin-left: 5px; }
-  .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
-  .form-row .form-group { flex: 1; margin-bottom: 0; position: relative; }
-  .form-group { margin-bottom: 15px; position: relative; }
-  .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 13px; color: #555; }
-  
-  /* Input 스타일 */
-  input[type="text"], select, input[type="file"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; transition: border 0.3s; font-family: 'Noto Sans KR', sans-serif; }
-  input:focus, select:focus { border-color: var(--ci-blue); outline: none; }
-  
-  .submit-btn { width: 100%; padding: 16px; background-color: var(--ci-blue); color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 15px; font-weight: 800; transition: background 0.3s; box-shadow: 0 4px 6px rgba(47, 98, 134, 0.2); }
-  .submit-btn:disabled { background-color: #ccc; cursor: not-allowed; box-shadow: none; }
-  
-  /* 약관 및 모달 */
-  .agree-all-box { background-color: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--ci-blue); display: flex; align-items: center; }
-  .agree-all-label { font-size: 15px; font-weight: 800; color: var(--ci-blue); cursor: pointer; display: flex; align-items: center; width: 100%; }
-  .agree-all-label input { width: 20px; height: 20px; margin-right: 10px; accent-color: var(--ci-blue); cursor: pointer; }
-  .term-item { border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; background-color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; }
-  .term-label { display: flex; align-items: center; font-size: 13px; font-weight: bold; color: var(--ci-dark); cursor: pointer; flex: 1; }
-  .term-label input { width: 18px; height: 18px; margin-right: 10px; accent-color: var(--ci-blue); cursor: pointer; }
-  .term-view-btn { font-size: 12px; color: #888; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 4px 8px; cursor: pointer; margin-left: 10px; font-family: 'Noto Sans KR', sans-serif; }
-  
-  /* 모달 */
-  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
-  .modal-box { background: white; width: 90%; max-width: 500px; max-height: 80vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 5px 30px rgba(0,0,0,0.3); }
-  .modal-header { padding: 15px; background: #f0f4f8; border-bottom: 1px solid #eee; font-weight: bold; color: var(--ci-dark); display: flex; justify-content: space-between; align-items: center; }
-  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #666; }
-  .modal-content { padding: 20px; overflow-y: auto; font-size: 13px; line-height: 1.6; color: #444; white-space: pre-wrap; font-family: 'Noto Sans KR', sans-serif; }
-  .modal-footer { padding: 15px; border-top: 1px solid #eee; text-align: center; }
-  .modal-btn { background: var(--ci-blue); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: 'Noto Sans KR', sans-serif; }
-  
-  /* 기타 스타일 */
-  .serial-guide-box { background-color: #eef6fb; border: 1px solid #dbe2e8; border-radius: 6px; padding: 12px; margin-bottom: 10px; text-align: center; }
-  .serial-guide-box img { max-width: 100%; border-radius: 4px; border: 1px solid #ccc; margin-bottom: 5px; }
-  .serial-guide-text { font-size: 12px; color: var(--ci-blue); margin-top: 5px; font-weight: 500; }
-  .error-msg { color: #e74c3c; font-size: 12px; margin-top: 5px; display: none; font-weight: bold; }
-  .store-info-display { font-size: 13px; color: var(--ci-dark); background-color: #f2f2f2; padding: 12px; border-radius: 6px; margin-top: 5px; display: none; line-height: 1.6; border-left: 3px solid var(--ci-green); }
-  .suggestions-list { position: absolute; top: 100%; left: 0; width: 100%; max-height: 200px; overflow-y: auto; background: #fff; border: 1px solid #ccc; border-radius: 0 0 6px 6px; z-index: 1000; list-style: none; padding: 0; margin: 0; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-  .suggestions-list li { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 14px; }
-  .suggestions-list li:hover { background-color: #f0f8ff; color: var(--ci-blue); }
-  .no-result-item { padding: 12px; color: #999; font-size: 13px; text-align: center; }
-  #imgPreview { display: none; max-width: 100px; max-height: 100px; margin-top: 10px; border-radius: 6px; border: 1px solid #ddd; }
-  
-  /* 로딩 */
-  .loading-container { display: none; flex-direction: column; align-items: center; justify-content: center; margin-top: 15px; background-color: #f8f9fa; padding: 20px; border-radius: 8px; }
-  .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--ci-blue); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin-bottom: 10px; }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  .loading-msg { font-size: 14px; font-weight: bold; color: var(--ci-dark); text-align: center; }
-  .wait-msg { font-size: 12px; color: #666; margin-top: 5px; text-align: center; }
-  
-  .footer-logo { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px dashed #eee; }
-  .footer-logo img { height: 24px; opacity: 0.8; }
-  
-  /* [수정] 입력창 + 조회버튼 (CI 컬러 적용) */
-  .input-wrapper { position: relative; display: flex; gap: 8px; align-items: stretch; }
-  .input-wrapper input { flex: 1; }
-  .check-btn { 
-    padding: 0 20px; 
-    background-color: var(--ci-blue); /* 회색 -> CI Blue 변경 */
-    color: white; 
-    border: none; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    font-weight: 800; 
-    font-size: 14px;
-    white-space: nowrap;
-    transition: background 0.2s;
-    box-shadow: 0 3px 6px rgba(47, 98, 134, 0.2); /* 은은한 그림자 추가 */
-  }
-  .check-btn:hover { background-color: #244d6b; /* 호버 시 약간 진하게 */ }
-
-  /* 1단계 말풍선 */
-  @keyframes attention-pulse { 0% { box-shadow: 0 0 0 0 rgba(47, 98, 134, 0.7); border-color: var(--ci-blue); } 70% { box-shadow: 0 0 0 10px rgba(47, 98, 134, 0); border-color: var(--ci-blue); } 100% { box-shadow: 0 0 0 0 rgba(47, 98, 134, 0); } }
-  @keyframes float-badge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-  .highlight-input { animation: attention-pulse 2s infinite; }
-  .step-badge { position: absolute; bottom: 100%; right: 0; margin-bottom: 8px; background-color: var(--ci-blue); color: white; font-size: 11px; font-weight: bold; padding: 5px 10px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); animation: float-badge 1.5s ease-in-out infinite; z-index: 10; white-space: nowrap; }
-  .step-badge::after { content: ''; position: absolute; top: 100%; right: 15px; border-width: 5px 5px 0; border-style: solid; border-color: var(--ci-blue) transparent transparent transparent; }
-  
-  @media (max-width: 500px) { .inquiry-container { margin: 15px; padding: 20px; } .form-row { flex-direction: column; gap: 0; } }
-</style>
+<link rel="stylesheet" href="./css/style.css">
 </head>
-<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
-<div class="inquiry-container">
+<body>
+<div class="inquiry-container regist-container">
   <div class="nav-header"><a href="./main.html" class="home-btn">🏠 메인으로</a></div>
   <h2>퀄리스포츠 제품 등록 및 보증 연장</h2>
   
   <form id="registForm">
-    <div class="agree-all-box">
-      <label class="agree-all-label"><input type="checkbox" id="allAgree"> 약관 전체 동의하기</label>
+    
+    <!-- 통합된 약관 동의 UI (그룹화) -->
+    <div class="terms-container">
+      <div class="terms-header">
+        <label class="agree-all-label"><input type="checkbox" id="allAgree"> 약관 전체 동의하기</label>
+      </div>
+      <div class="terms-body">
+        <div class="terms-row">
+          <label><input type="checkbox" id="privacyAgree" class="agree-item"> 개인정보 수집 및 이용 동의 <span class="badge-req">(필수)</span></label>
+          <button type="button" class="btn-view-term" onclick="openModal('modalPrivacy')">내용보기</button>
+        </div>
+        <div class="terms-row">
+          <label><input type="checkbox" id="thirdPartyAgree" class="agree-item"> 개인정보 제3자 제공 동의 <span class="badge-req">(필수)</span></label>
+          <button type="button" class="btn-view-term" onclick="openModal('modalThird')">내용보기</button>
+        </div>
+        <!-- [NEW] 국외 이전 동의 -->
+        <div class="terms-row">
+          <label><input type="checkbox" id="transferAgree" class="agree-item"> 개인정보 국외 이전 동의 <span class="badge-req">(필수)</span></label>
+          <button type="button" class="btn-view-term" onclick="openModal('modalTransfer')">내용보기</button>
+        </div>
+        <div class="terms-row">
+          <label><input type="checkbox" id="marketingAgree" class="agree-item"> 마케팅 정보 수신 동의 <span class="badge-opt">(선택)</span></label>
+          <button type="button" class="btn-view-term" onclick="openModal('modalMarketing')">내용보기</button>
+        </div>
+      </div>
     </div>
-
-    <div class="term-item"><label class="term-label"><input type="checkbox" id="privacyAgree" class="agree-item"> 개인정보 수집 및 이용 동의 <span class="required-mark">(필수)</span></label><button type="button" class="term-view-btn" onclick="openModal('modalPrivacy')">내용보기</button></div>
-    <div class="term-item"><label class="term-label"><input type="checkbox" id="thirdPartyAgree" class="agree-item"> 개인정보 제3자 제공 동의 <span class="required-mark">(필수)</span></label><button type="button" class="term-view-btn" onclick="openModal('modalThird')">내용보기</button></div>
-    <div class="term-item"><label class="term-label"><input type="checkbox" id="marketingAgree" class="agree-item"> 마케팅 정보 수신 동의 <span class="optional-mark">(선택)</span></label><button type="button" class="term-view-btn" onclick="openModal('modalMarketing')">내용보기</button></div>
 
     <div class="form-group" style="margin-top:20px;">
       <label for="serialNo">제품 번호(차대번호) <span class="required-mark">*</span></label>
@@ -140,15 +71,136 @@
       <div style="font-size:11px; color:#e74c3c; margin-top:5px; font-weight:bold;">* 3MB 이하의 JPG, PNG, PDF 파일만 업로드 가능합니다.</div>
     </div>
 
-    <button type="button" class="submit-btn" onclick="submitForm()">등록 신청하기</button>
+    <button type="button" class="submit-btn">등록 신청하기</button>
     <div id="loadingArea" class="loading-container"><div class="spinner"></div><div id="loadingText" class="loading-msg">사진 업로드 및 등록 중입니다...</div><div id="waitText" class="wait-msg">잠시만 기다려주세요.</div></div>
   </form>
   <div class="footer-logo"><img src="https://via.placeholder.com/150x40/231f20/ffffff?text=QUALI+SPORTS" alt="QUALI SPORTS"></div>
 </div>
 
-<div id="modalPrivacy" class="modal-overlay" onclick="closeModal('modalPrivacy')"><div class="modal-box" onclick="event.stopPropagation()"><div class="modal-header">개인정보 수집 및 이용 동의 <button class="modal-close" onclick="closeModal('modalPrivacy')">&times;</button></div><div class="modal-content">1. 수집 항목: 이름, 연락처, 제품 정보(모델명, 차대번호), 구매 매장 정보, 영수증 이미지<br><br>2. 수집 목적: 정품 등록 확인, 보증 기간 연장, AS 접수 시 고객 식별 및 이력 관리<br><br>3. 보유 기간: 제품 보증 기간 만료 후 1년까지 (단, 법령에 특별한 규정이 있는 경우 관련 법령에 따름)<br><br>4. 동의 거부 권리: 본 동의를 거부할 수 있으나, 미동의 시 정품 등록 및 보증 연장 혜택을 받으실 수 없습니다.</div><div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalPrivacy')">확인</button></div></div></div>
-<div id="modalThird" class="modal-overlay" onclick="closeModal('modalThird')"><div class="modal-box" onclick="event.stopPropagation()"><div class="modal-header">개인정보 제3자 제공 동의 <button class="modal-close" onclick="closeModal('modalThird')">&times;</button></div><div class="modal-content">1. 제공받는 자: 구매하신 대리점 및 퀄리스포츠 협력 AS 지정점<br><br>2. 제공 목적: 제품 수리 및 점검, 부품 교체 등 원활한 AS 서비스 제공<br><br>3. 제공 항목: 이름, 연락처, 차대번호, 차종<br><br>4. 보유 기간: 서비스 제공 목적 달성 시까지</div><div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalThird')">확인</button></div></div></div>
-<div id="modalMarketing" class="modal-overlay" onclick="closeModal('modalMarketing')"><div class="modal-box" onclick="event.stopPropagation()"><div class="modal-header">마케팅 정보 수신 동의 <button class="modal-close" onclick="closeModal('modalMarketing')">&times;</button></div><div class="modal-content">1. 신제품 출시 소식, 할인 프로모션, 이벤트 혜택 등 다양한 정보를 SMS, 알림톡 등으로 받아보실 수 있습니다.<br><br>2. 동의하지 않으셔도 정품 등록 서비스 이용에는 제한이 없습니다.</div><div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalMarketing')">확인</button></div></div></div>
+<!-- 모달 영역 -->
+<div id="modalPrivacy" class="modal-overlay" onclick="closeModal('modalPrivacy')"><div class="modal-box" onclick="event.stopPropagation()">
+  <div class="modal-header">[필수]개인정보 수집 및 이용 동의 <button class="modal-close" onclick="closeModal('modalPrivacy')">&times;</button>
+  </div>
+  <div class="modal-content">
+퀄리스포츠(이하 “회사”)는 고객님의 제품등록 및 보증연장 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.
+1. 수집·이용 목적
+제품 정품 등록 확인 및 소유자 식별
+보증기간 연장 서비스 제공 및 잔여 보증 관리
+A/S 접수 시 고객 확인 및 수리 이력 관리
+제품 안전관리 및 중요 업데이트 안내(리콜, 안전 점검 등)
+
+2. 수집 항목
+필수항목: 성명, 휴대전화번호, 차대번호, 구입 모델, 구입 매장 정보, 구매영수증 또는 소유증빙 사진
+생성항목: 서비스 이용기록, 접속 로그, A/S 처리 기록
+
+3. 보유 및 이용 기간
+서비스 이용 시부터 A/S 최종 처리일로부터 3년까지
+단, 관계 법령(전자상거래법 등)에 따라 보존 의무가 있는 경우 해당 법령이 정한 기간까지 보관합니다.
+
+4. 동의 거부 권리 및 불이익
+귀하는 본 동의를 거부할 권리가 있습니다. 다만, 필수 항목에 대한 동의를 거부하실 경우 제품 등록이 불가하며 그에 따른 보증 연장 및 안전 공지 서비스를 받으실 수 없습니다.
+  </div>
+    <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalPrivacy')">확인</button>
+    </div>
+  </div>
+  </div>
+
+<div id="modalThird" class="modal-overlay" onclick="closeModal('modalThird')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">[필수]개인정보 제3자 제공 동의 <button class="modal-close" onclick="closeModal('modalThird')">&times;</button>
+    </div>
+    <div class="modal-content">
+회사는 효율적인 서비스 제공과 전문적인 품질 관리를 위해 아래와 같이 계열사에 정보를 제공합니다.
+1. 제공받는 자
+(주)엑스트론
+
+2. 제공받는 자의 이용 목적
+퀄리스포츠 제품에 대한 통합 A/S 업무 수행
+제품 결함 분석 및 품질 개선 활동
+보증 연장 데이터 관리 및 고객 응대 지원
+향후 사업 이관 시 서비스의 연속성 유지
+
+3. 제공하는 항목
+성명, 연락처, 차대번호, 구매 모델, 구입 매장 정보, 구매영수증 파일, 등록/처리 결과 정보
+
+4. 제공받는 자의 보유 및 이용 기간
+개인정보 수집·이용 동의 범위 내 (목적 달성 시 혹은 제공받는 자의 이용 목적 달성 시까지)
+
+5. 동의 거부 권리 및 불이익
+귀하는 본 동의를 거부할 수 있습니다. 다만, 본 동의는 원활한 A/S 및 보증 관리를 위한 필수적인 절차이므로, 동의 거부 시 해당 업체가 수행하는 전문적인 서비스 지원이 제한될 수 있습니다.
+    </div>
+      <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalThird')">확인</button>
+      </div>
+    </div>
+  </div>
+
+<!-- [NEW] 국외 이전 동의 모달 -->
+<div id="modalTransfer" class="modal-overlay" onclick="closeModal('modalTransfer')"><div class="modal-box" onclick="event.stopPropagation()">
+  <div class="modal-header">[필수]개인정보 국외 이전 동의 <button class="modal-close" onclick="closeModal('modalTransfer')">&times;</button>
+  </div>
+  <div class="modal-content">
+회사는 글로벌 클라우드 인프라를 활용하여 데이터를 안전하게 보관하고 관리하기 위해 다음과 같이 개인정보를 국외로 이전합니다.
+
+1. 이전되는 국가 및 일시
+국가: 싱가포르 및 전세계 구글 데이터센터 소재지
+일시: 제품 등록 완료 및 데이터 입력 시 수시 전송
+
+2. 이전받는 자
+Google Asia Pacific Pte. Ltd. (구글)
+연락처: https://www.google.com/contact
+
+3. 이전되는 개인정보 항목
+수집된 개인정보 및 제품 등록 정보 전 항목 (성명, 연락처, 차대번호, 모델명, 구매 증빙 이미지 등)
+
+4. 이전 방법 및 목적
+방법: 전용 클라우드 네트워크(Google AppSheet / GAS)를 통한 암호화 전송
+목적: 서비스 운영을 위한 데이터 저장, 시스템 유지보수 및 기술 지원
+
+5. 이전받는 자의 보유 및 이용 기간
+개인정보 수집·이용 동의 기간과 동일 (서비스 탈퇴 시 또는 목적 달성 시까지)
+
+6. 동의 거부 권리 및 불이익
+본 서비스는 구글의 클라우드 시스템을 기반으로 운영되므로, 국외 이전에 동의하지 않으실 경우 제품 등록 서비스 이용이 불가능합니다.
+  </div>
+    <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalTransfer')">확인</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalMarketing" class="modal-overlay" onclick="closeModal('modalMarketing')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">[선택]마케팅 정보 수신 동의 <button class="modal-close" onclick="closeModal('modalMarketing')">&times;</button>
+    </div>
+    <div class="modal-content">
+퀄리스포츠(이하 “회사”)는 고객님께 더욱 풍성한 혜택과 신제품 소식을 전달하기 위해 아래와 같이 마케팅 목적의 개인정보 활용 및 광고성 정보 수신 동의를 받고자 합니다.
+
+1. 개인정보 수집·이용 목적
+신제품 출시 안내 및 프로모션 정보 전달
+이벤트 참여 기회 제공 및 경품 발송
+쿠폰, 할인 혜택 등 부가 서비스 안내
+고객 맞춤형 서비스 제공을 위한 통계 및 분석
+
+2. 수집 항목
+성명, 휴대전화번호
+
+3. 광고성 정보 수신 채널
+카카오톡(알림톡/친구톡), 문자(SMS/MMS)
+
+4. 보유 및 이용 기간
+동의 철회 시 또는 서비스 종료 시까지
+고객님께서 동의를 철회하시는 경우, 회사는 지체 없이 해당 정보를 파기합니다.
+
+5. 동의 거부 권리 및 불이익
+귀하는 본 동의를 거부할 권리가 있습니다. 본 동의는 선택 사항이므로 거부하시더라도 제품 등록 및 보증 연장 서비스 이용에는 어떠한 제한도 없습니다.
+다만, 동의하지 않으실 경우 각종 프로모션 혜택, 이벤트 참여 안내, 할인 쿠폰 제공 등이 제한될 수 있습니다.
+
+6. 철회 방법
+회사 카카오톡 고객센터를 통한 요청
+    </div>
+    <div class="modal-footer"><button class="modal-btn" onclick="closeModal('modalMarketing')">확인</button>
+    </div>
+  </div>
+</div>
 
 <div id="systemAlert" class="modal-overlay">
   <div class="modal-box" style="max-width: 350px; text-align: center;">
@@ -158,201 +210,8 @@
   </div>
 </div>
 
-<script>
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyy02EOo87dG4BWco1kbLO3O9BXwFSUKy-olHVwUim_E_07Azl5tl-e40UO1uBqoyeJ/exec"; 
-  const MAX_FILE_SIZE = 3 * 1024 * 1024;
-  let ALL_STORES = [], STORE_DATA_MAP = {}; 
-  let GLOBAL_RETRY_COUNT = 0;
-
-  function openModal(id) { const el = document.getElementById(id); if(el) el.style.display = 'flex'; }
-  function closeModal(id) { const el = document.getElementById(id); if(el) el.style.display = 'none'; }
-
-  function showAlert(message, callback) {
-    const modal = document.getElementById('systemAlert');
-    const msgBox = document.getElementById('systemAlertMsg');
-    const btn = document.getElementById('systemAlertBtn');
-    if (modal && msgBox && btn) {
-      msgBox.innerHTML = message.replace(/\n/g, "<br>");
-      modal.style.display = 'flex';
-      btn.onclick = function() { modal.style.display = 'none'; if (callback) callback(); };
-    } else { alert(message); if (callback) callback(); }
-  }
-
-  const allAgree = document.getElementById("allAgree");
-  const agreeItems = document.querySelectorAll(".agree-item");
-  allAgree.addEventListener("change", function() { agreeItems.forEach(item => item.checked = allAgree.checked); });
-  agreeItems.forEach(item => { item.addEventListener("change", function() { const allChecked = Array.from(agreeItems).every(i => i.checked); allAgree.checked = allChecked; }); });
-
-  window.addEventListener("pageshow", function(event) {
-    if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-      document.getElementById("registForm").reset();
-      document.getElementById("storeInfoDisplay").style.display = "none";
-      document.getElementById("serialError").style.display = "none";
-      document.getElementById("imgPreview").style.display = "none";
-      setButtonState(true);
-      document.getElementById("loadingArea").style.display = "none";
-      document.getElementById("serialNo").classList.add("highlight-input");
-      document.getElementById("stepBadge").style.display = "block";
-    }
-  });
-
-  document.addEventListener("DOMContentLoaded", function() {
-    fetchWithRetry(WEB_APP_URL, {}, 3).then(data => { 
-        const productSelect = document.getElementById("productSelect");
-        updateSelectOptions(productSelect, data.products, "제품 모델 선택");
-        ALL_STORES = data.stores; STORE_DATA_MAP = {}; 
-        data.stores.forEach(store => { STORE_DATA_MAP[store.name] = store; });
-        document.getElementById("storeInput").placeholder = "매장명, 대리점명, 주소 검색";
-      }).catch(err => console.error("데이터 로딩 실패")); 
-  });
-
-  const receiptFile = document.getElementById("receiptFile");
-  const previewImg = document.getElementById("imgPreview");
-  receiptFile.addEventListener("change", function() {
-    if (this.files.length > 0) {
-      if(this.files[0].size > MAX_FILE_SIZE) { 
-        showAlert("❌ 파일 용량이 3MB를 초과합니다!\n용량을 줄여서 다시 올려주세요."); 
-        this.value = ""; previewImg.style.display = "none"; return; 
-      }
-      const reader = new FileReader();
-      reader.onload = function(e) { previewImg.src = e.target.result; previewImg.style.display = "block"; }
-      reader.readAsDataURL(this.files[0]);
-    } else { previewImg.style.display = "none"; }
-  });
-
-  const storeInput = document.getElementById("storeInput");
-  const storeCodeInput = document.getElementById("storeCode");
-  const suggestions = document.getElementById("suggestions");
-  const infoDisplay = document.getElementById("storeInfoDisplay");
-  storeInput.addEventListener("input", function() {
-    const keyword = this.value.toLowerCase().trim();
-    suggestions.innerHTML = ""; infoDisplay.style.display = "none"; 
-    if (keyword.length === 0) { suggestions.style.display = "none"; return; }
-    const matched = ALL_STORES.filter(store => {
-      return store.name.toLowerCase().includes(keyword) || (store.alias && store.alias.toLowerCase().includes(keyword)) || (store.addr && store.addr.toLowerCase().includes(keyword)) || (store.agency && store.agency.toLowerCase().includes(keyword));
-    });
-    if (matched.length > 0) {
-      suggestions.style.display = "block";
-      matched.forEach(store => {
-        const li = document.createElement("li"); li.innerText = store.agency ? `${store.name} (${store.agency})` : store.name; 
-        li.addEventListener("click", function() { selectStore(store); }); suggestions.appendChild(li);
-      });
-    } else { suggestions.style.display = "block"; const li = document.createElement("li"); li.innerText = "검색 결과가 없습니다."; li.className = "no-result-item"; suggestions.appendChild(li); }
-  });
-  function selectStore(storeObj) {
-    storeInput.value = storeObj.name; storeCodeInput.value = storeObj.code; suggestions.style.display = "none"; 
-    infoDisplay.style.display = "block"; infoDisplay.innerHTML = `📍 <b>주소:</b> ${storeObj.addr || "없음"}<br>📞 <b>연락처:</b> ${storeObj.phone || "없음"}`; storeInput.style.border = "1px solid #ccc";
-  }
-  document.addEventListener("click", function(e) { if (!storeInput.contains(e.target) && !suggestions.contains(e.target)) suggestions.style.display = "none"; });
-
-  const phoneInput = document.getElementById("userPhone");
-  phoneInput.addEventListener('input', function(e) {
-    let val = e.target.value.replace(/[^0-9]/g, '');
-    if (val.length > 3 && val.length <= 7) val = val.slice(0, 3) + "-" + val.slice(3); else if (val.length > 7) val = val.slice(0, 3) + "-" + val.slice(3, 7) + "-" + val.slice(7);
-    e.target.value = val.slice(0, 13);
-  });
-
-  const serialInput = document.getElementById("serialNo");
-  const serialError = document.getElementById("serialError");
-  const stepBadge = document.getElementById("stepBadge");
-  const btnCheckSerial = document.getElementById("btnCheckSerial");
-
-  // 실제 조회 함수
-  function runSerialCheck() {
-    const val = serialInput.value.trim(); 
-    if (val.length < 1) {
-      serialError.style.display = "none"; serialError.innerText = ""; setButtonState(true);
-      serialInput.classList.add("highlight-input"); if(stepBadge) stepBadge.style.display = "block";
-      const select = document.getElementById("productSelect"); if(select) select.value = ""; 
-      return; 
-    }
-    serialError.style.display = "block"; serialError.style.color = "var(--ci-blue)"; serialError.innerText = "확인 중..."; setButtonState(false);
-    fetchWithRetry(WEB_APP_URL + "?type=check&no=" + val, {}, 2).then(d => {
-        if (d.status === "ok") { 
-          serialError.style.color = "var(--ci-green)"; serialError.innerText = `✅ 확인됨 (${d.model})`; setButtonState(true); 
-          const select = document.getElementById("productSelect"); if(d.model) select.value = d.model; 
-        } 
-        else { serialError.style.color = "#e74c3c"; serialError.innerText = "❌ " + d.message; setButtonState(false); }
-    }).catch(e => { serialError.innerText = ""; setButtonState(true); });
-  }
-
-  // 이벤트 연결
-  if(btnCheckSerial) btnCheckSerial.addEventListener("click", runSerialCheck);
-  serialInput.addEventListener("blur", runSerialCheck);
-  serialInput.addEventListener("focus", function() { this.classList.remove("highlight-input"); if(stepBadge) stepBadge.style.display = "none"; });
-  serialInput.addEventListener("keypress", function(e) { if(e.key === 'Enter') { e.preventDefault(); runSerialCheck(); } });
-
-  function updateSelectOptions(el, items, defText) { 
-    el.innerHTML = ""; const opt = document.createElement("option"); opt.value = ""; opt.text = defText; opt.disabled = true; opt.selected = true; opt.hidden = true; el.add(opt); 
-    if(items) { items.forEach(i => { const o = document.createElement("option"); o.value = i; o.text = i; el.add(o); }); }
-  }
-  function setButtonState(e) { const submitBtn = document.querySelector(".submit-btn"); submitBtn.disabled = !e; submitBtn.style.backgroundColor = e ? "var(--ci-blue)" : "#ccc"; }
-
-  async function fetchWithRetry(url, options = {}, retries = 3, backoff = 1000) {
-    try {
-      const response = await fetch(url, options);
-      if (!response.ok) throw new Error("Server Busy");
-      return await response.json();
-    } catch (error) {
-      if (retries > 0) {
-        GLOBAL_RETRY_COUNT++;
-        const waitText = document.getElementById("waitText");
-        if(waitText) waitText.innerText = `접속량이 많아 대기 중입니다... (${GLOBAL_RETRY_COUNT}회 재시도)`;
-        await new Promise(resolve => setTimeout(resolve, backoff));
-        return fetchWithRetry(url, options, retries - 1, backoff * 2);
-      } else { throw error; }
-    }
-  }
-
-  function submitForm() {
-    const userName = document.getElementById("userName").value;
-    const userPhone = document.getElementById("userPhone").value;
-    const product = document.getElementById("productSelect").value;
-    const storeName = document.getElementById("storeInput").value;
-    const storeCode = document.getElementById("storeCode").value; 
-    const serialNo = document.getElementById("serialNo").value;
-    const privacyAgree = document.getElementById("privacyAgree").checked;
-    const thirdPartyAgree = document.getElementById("thirdPartyAgree").checked;
-    const marketingAgree = document.getElementById("marketingAgree").checked;
-    const fileInput = document.getElementById("receiptFile");
-
-    if (!privacyAgree) return showAlert("개인정보 수집 및 이용에 동의해야 합니다. (필수)");
-    if (!thirdPartyAgree) return showAlert("개인정보 제3자 제공에 동의해야 합니다. (필수)");
-    if (!serialNo) return showAlert("제품 번호를 입력하고 확인받으세요.");
-    if (!userName) return showAlert("이름을 입력해주세요.");
-    if (!userPhone) return showAlert("전화번호를 입력해주세요.");
-    if (!product) return showAlert("제품 모델을 선택해주세요.");
-    if (!storeName || !storeCode) return showAlert("구입 매장을 목록에서 정확히 선택해주세요.");
-    if (fileInput.files.length === 0) return showAlert("구매 영수증은 필수 항목입니다.");
-    if (fileInput.files[0].size > MAX_FILE_SIZE) return showAlert("파일 용량이 3MB를 초과합니다.");
-
-    setButtonState(false); document.getElementById("loadingArea").style.display = "flex"; document.getElementById("waitText").innerText = "잠시만 기다려주세요."; GLOBAL_RETRY_COUNT = 0; 
-
-    const formData = { userName, userPhone, product, storeName, storeCode, serialNo, marketingConsent: marketingAgree };
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      formData.fileName = file.name; formData.mimeType = file.type; formData.fileData = e.target.result.split(",")[1];
-      fetchWithRetry(WEB_APP_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(formData) }, 5, 1000) 
-      .then(res => {
-        if (res.result === "success") {
-          showAlert("✅ 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function() {
-            window.location.href = "./product_check.html?name=" + encodeURIComponent(formData.userName) + "&phone=" + encodeURIComponent(formData.userPhone);
-          });
-        } else if (res.message.includes("이미 등록된 제품") && GLOBAL_RETRY_COUNT > 0) {
-           showAlert("✅ (재접속 성공) 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function() {
-              window.location.href = "./product_check.html?name=" + encodeURIComponent(formData.userName) + "&phone=" + encodeURIComponent(formData.userPhone);
-           });
-        } else { 
-          showAlert("오류 발생: " + res.message); setButtonState(true); document.getElementById("loadingArea").style.display = "none"; 
-        }
-      }).catch(e => { 
-        showAlert("접속자가 많아 등록에 실패했습니다.\n잠시 후 다시 시도해주세요."); setButtonState(true); document.getElementById("loadingArea").style.display = "none"; 
-      });
-    };
-    reader.readAsDataURL(file);
-  }
-  document.addEventListener('keydown', function(e) { if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) { e.preventDefault(); return false; } });
-</script>
+<!-- 스크립트 로드 순서: 공통 -> 등록 로직 -->
+<script src="./js/common.js"></script>
+<script src="./js/regist.js"></script>
 </body>
 </html>
