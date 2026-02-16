@@ -1,9 +1,70 @@
 @charset "UTF-8";
 
 /* =========================================
-   0. Font Configuration
+   0. Font Configuration (Paperlogy)
    ========================================= */
-/* Pretendard CDN is loaded via HTML <link> tags */
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-1Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-2ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-3Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-4Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-5Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-6SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-7Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-8ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('../fonts/Paperlogy-1.000/Paperlogy-9Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
 
 /* =========================================
    1. 기본 설정 (Variables & Reset)
@@ -131,7 +192,9 @@ body,
 html {
   margin: 0;
   padding: 0;
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-family: 'Paperlogy', sans-serif;
+  font-weight: 400;
+  /* Default weight */
   background-color: var(--p-bg-body);
   color: var(--p-text-main);
   -webkit-user-select: none;
@@ -219,7 +282,7 @@ html {
   color: var(--p-text-sub);
   white-space: pre-wrap;
   text-align: left;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Paperlogy', sans-serif;
 }
 
 .modal-footer {
@@ -236,7 +299,7 @@ html {
   border-radius: var(--r-radius-sm);
   cursor: pointer;
   font-weight: 700;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Paperlogy', sans-serif;
   transition: var(--t-transition);
 }
 
@@ -278,7 +341,7 @@ html {
 
 .loading-msg {
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 800;
   color: var(--ci-dark);
 }
 
@@ -361,7 +424,7 @@ html {
   border: 1px solid var(--p-border);
   transition: var(--t-transition);
   cursor: pointer;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Paperlogy', sans-serif;
 }
 
 .terms-btn:hover {
@@ -483,7 +546,7 @@ html {
   align-items: center;
   padding: 5px 0;
   transition: color 0.3s;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Paperlogy', sans-serif;
 }
 
 .back-btn-top:hover {
@@ -515,7 +578,7 @@ html {
   margin-bottom: 10px;
   color: var(--ci-dark);
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .sub-text {
@@ -537,7 +600,7 @@ html {
   color: #3c1e1e;
   padding: 12px 20px;
   border-radius: 8px;
-  font-weight: bold;
+  font-weight: 700;
   text-decoration: none;
   font-size: 14px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -593,7 +656,7 @@ body.dark-mode .kakao-btn {
   color: #fff;
   border: none;
   border-radius: var(--r-radius-sm);
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   font-size: 16px;
   margin-top: 10px;
@@ -638,7 +701,7 @@ body.dark-mode .kakao-btn {
   font-size: 11px;
   padding: 4px 10px;
   border-radius: 6px;
-  font-weight: 800;
+  font-weight: 900;
   border: 1px solid var(--p-border);
 }
 
@@ -648,7 +711,7 @@ body.dark-mode .kakao-btn {
   background-color: var(--p-secondary);
   color: white;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 900;
   border-radius: 20px;
   margin-bottom: 20px;
   box-shadow: 0 4px 10px var(--p-shadow);
@@ -691,7 +754,7 @@ body.dark-mode .kakao-btn {
 
 .warranty-title {
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--p-text-main);
   margin-bottom: 12px;
   display: flex;
@@ -749,7 +812,7 @@ body.dark-mode .kakao-btn {
   color: white;
   text-align: center;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 700;
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
@@ -781,13 +844,13 @@ body.dark-mode .kakao-btn {
 
 .error-text {
   color: #e74c3c;
-  font-weight: bold;
+  font-weight: 800;
 }
 
 .count-msg {
   text-align: center;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--p-text-main);
   /* Changed from ci-dark */
   margin-bottom: 10px;
@@ -826,7 +889,7 @@ body.dark-mode .kakao-btn {
 .required-mark {
   color: #e74c3c;
   margin-left: 3px;
-  font-weight: bold;
+  font-weight: 800;
 }
 
 .optional-mark {
@@ -873,7 +936,7 @@ input[type="file"] {
   font-size: 15px;
   box-sizing: border-box;
   transition: var(--t-transition);
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Paperlogy', sans-serif;
 }
 
 input:focus,
@@ -894,7 +957,7 @@ select:focus {
   font-size: 17px;
   cursor: pointer;
   margin-top: 15px;
-  font-weight: 800;
+  font-weight: 900;
   transition: var(--t-transition);
   box-shadow: 0 4px 6px var(--p-shadow);
 }
@@ -938,7 +1001,7 @@ select:focus {
   color: var(--ci-dark);
   margin: 0;
   width: auto;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1009,7 +1072,7 @@ select:focus {
 /* 필수/선택 배지 */
 .badge-req {
   color: #e74c3c;
-  font-weight: bold;
+  font-weight: 800;
   font-size: 11px;
   margin-left: 4px;
 }
@@ -1047,7 +1110,7 @@ select:focus {
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--p-text-ghost);
   transition: var(--t-transition);
 }
@@ -1107,7 +1170,7 @@ select:focus {
 
 .step-title {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 900;
   color: var(--p-text-main);
   margin-bottom: 25px;
   line-height: 1.4;
@@ -1125,7 +1188,7 @@ select:focus {
   flex: 1;
   padding: 16px;
   border-radius: var(--r-radius-sm);
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   transition: var(--t-transition);
   font-size: 15px;
@@ -1203,7 +1266,7 @@ select:focus {
 .error-msg {
   font-size: 12px;
   margin-top: 8px;
-  font-weight: 800;
+  font-weight: 900;
   min-height: 18px;
 }
 
@@ -1335,7 +1398,7 @@ select:focus {
   /* CI Color: Navy */
   color: white;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 900;
   padding: 6px 12px;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(47, 98, 134, 0.3);
