@@ -8,13 +8,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;800;900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
-  <link rel="manifest" href="./manifest.json">
+  <!-- <link rel="manifest" href="./manifest.json"> -->
   <meta name="theme-color" content="#2f6286">
 </head>
 
 <body>
   <div class="inquiry-container regist-container">
-    <div class="nav-header"><a href="./main.html" class="home-btn">🏠 메인으로</a></div>
+    <div class="nav-header">
+      <button id="topBackBtn" class="back-btn-top">이전으로</button>
+      <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="테마 전환">🌙</button>
+      <a href="./main.html" class="home-btn">🏠 메인으로</a>
+    </div>
     <h2>제품 등록 및 보증 연장</h2>
 
     <!-- Stepper Indicator -->
@@ -90,7 +94,7 @@
           <p id="serialError" class="error-msg"></p>
         </div>
         <div class="step-btns">
-          <button type="button" class="back-btn" onclick="nextStep(1)">이전</button>
+          <!-- <button type="button" class="back-btn" onclick="nextStep(1)">이전</button> -->
           <button type="button" class="next-btn" id="btnStep2Next" onclick="nextStep(3)" disabled>인증 완료 및 다음 <span
               class="arrow">→</span></button>
         </div>
@@ -126,7 +130,7 @@
         </div>
 
         <div class="step-btns">
-          <button type="button" class="back-btn" onclick="nextStep(2)">이전</button>
+          <!-- <button type="button" class="back-btn" onclick="nextStep(2)">이전</button> -->
           <button type="button" class="submit-btn">등록 신청하기</button>
         </div>
       </div>
@@ -263,12 +267,13 @@
   <script src="./js/common.js"></script>
   <script src="./js/regist.js"></script>
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
-      });
-    }
+    // if ('serviceWorker' in navigator) {
+    //   window.addEventListener('load', () => {
+    //     navigator.serviceWorker.register('./sw.js');
+    //   });
+    // }
   </script>
 </body>
 
 </html>
+```

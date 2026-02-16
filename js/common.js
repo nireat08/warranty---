@@ -7,7 +7,34 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyy02EOo87dG4BWco1kbLO3O9BXwFSUKy-olHVwUim_E_07Azl5tl-e40UO1uBqoyeJ/exec";
 
 // [보안] 서버(GAS)와 약속된 비밀 토큰 (GAS 코드의 API_TOKEN과 일치해야 함)
-const API_TOKEN = "QUALI_SECRET_TOKEN_2026"; 
+const API_TOKEN = "QUALI_SECRET_TOKEN_2026";
+
+// Theme Management
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    // Check saved preference or system preference
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.body.classList.add('dark-mode');
+        updateThemeIcon(true);
+    } else {
+        document.body.classList.remove('dark-mode');
+        updateThemeIcon(false);
+    }
+}
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon(isDark);
+}
+
+function updateThemeIcon(isDark) {
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) {
+        btn.innerHTML = isDark ? '☀️' : '🌙';
+        btn.setAttribute('aria-label', isDark ? '라이트 모드로 전환' : '다크 모드로 전환');
+    }
+}
 
 // 모달 제어 함수
 function openModal(id) {
@@ -38,11 +65,11 @@ async function fetchWithRetry(url, options = {}, retries = 3, backoff = 1000) {
         if (retries > 0) {
             const waitText = document.getElementById("waitText");
             if (waitText) waitText.innerText = `접속량이 많아 대기 중입니다... (${retries})`;
-            
+
             // 글로벌 카운트 변수가 있다면 업데이트 (등록페이지용)
             if (window.GLOBAL_RETRY_COUNT !== undefined) {
                 window.GLOBAL_RETRY_COUNT++;
-                if(waitText) waitText.innerText = `접속량이 많아 대기 중입니다... (${window.GLOBAL_RETRY_COUNT}회 재시도)`;
+                if (waitText) waitText.innerText = `접속량이 많아 대기 중입니다... (${window.GLOBAL_RETRY_COUNT}회 재시도)`;
             }
 
             await new Promise(resolve => setTimeout(resolve, backoff));
@@ -56,13 +83,21 @@ async function fetchWithRetry(url, options = {}, retries = 3, backoff = 1000) {
 
 // 보안 및 우클릭 방지 (문서 로드 시 자동 실행)
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme(); // Initialize theme
+
+    // Add Toggle Button Functionality if exists
+    const toggleBtn = document.getElementById('themeToggleBtn');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleTheme);
+    }
+
     document.addEventListener("contextmenu", e => e.preventDefault());
     document.addEventListener("dragstart", e => e.preventDefault());
     document.addEventListener("selectstart", e => e.preventDefault());
-    
-    document.addEventListener('keydown', function(e) {
-        if (e.keyCode === 123 || 
-            (e.ctrlKey && e.shiftKey && e.keyCode === 73) || 
+
+    document.addEventListener('keydown', function (e) {
+        if (e.keyCode === 123 ||
+            (e.ctrlKey && e.shiftKey && e.keyCode === 73) ||
             (e.ctrlKey && e.keyCode === 85)) {
             e.preventDefault();
             return false;

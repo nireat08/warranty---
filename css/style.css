@@ -21,6 +21,13 @@
   --p-error: #e74c3c;
   --p-success: #72bf44;
 
+  /* Missing var fix */
+  --ci-dark: #333333;
+  /* Default dark color for light mode */
+  --ci-blue: #2f6286;
+  /* Map to p-primary */
+
+
   /* Shared Tokens */
   --r-radius-sm: 8px;
   --r-radius-md: 12px;
@@ -28,19 +35,69 @@
   --t-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --p-text-main: #f8f9fa;
-    --p-text-sub: #b0b0b0;
-    --p-text-ghost: #707070;
-    --p-bg-body: #121212;
-    --p-bg-surface: #1e1e1e;
-    --p-border: #333333;
-    --p-border-focus: #5d9cbd;
-    --p-shadow: rgba(0, 0, 0, 0.3);
-    --p-shadow-hover: rgba(0, 0, 0, 0.5);
-  }
+/* Dark Mode Preference handled via JS */
+
+
+/* Dark Mode Class Override */
+body.dark-mode {
+  --p-text-main: #f8f9fa;
+  --p-text-sub: #b0b0b0;
+  --p-text-ghost: #707070;
+  --p-bg-body: #121212;
+  --p-bg-surface: #1e1e1e;
+  --p-border: #333333;
+  --p-border-focus: #5d9cbd;
+  --p-shadow: rgba(0, 0, 0, 0.3);
+  --p-shadow-hover: rgba(0, 0, 0, 0.5);
+
+  /* Fix specific colors for dark mode */
+  --ci-dark: #f8f9fa;
+  --p-primary: #5d9cbd;
+  /* Lighter navy for better contrast in dark mode */
+  --p-primary-hover: #7eb6d4;
+  --p-border: #444444;
 }
+
+/* Dark Mode Specific Overrides for Hardcoded Colors */
+body.dark-mode .terms-row label,
+body.dark-mode .sub-text,
+body.dark-mode .modal-close,
+body.dark-mode .terms-header .agree-all-label {
+  color: var(--p-text-main);
+}
+
+body.dark-mode .terms-container {
+  background-color: var(--p-bg-surface);
+  border-color: var(--p-border);
+}
+
+/* Dark Mode Toggle Button */
+.theme-toggle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--p-bg-body);
+  color: var(--p-text-main);
+  border: 1px solid var(--p-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0 10px;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--p-border);
+  transform: translateY(-2px);
+}
+
+/* Fix for Terms Agreement Text in Dark Mode if it uses hardcoded colors */
+body.dark-mode .modal-content {
+  color: #e0e0e0;
+}
+
 
 body,
 html {
@@ -345,8 +402,34 @@ html {
 
 .nav-header {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 5px 0;
+}
+
+.back-btn-top {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  transition: color 0.3s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.back-btn-top:hover {
+  color: var(--ci-blue);
+}
+
+.back-btn-top::before {
+  content: '←';
+  margin-right: 5px;
+  font-size: 16px;
 }
 
 .home-btn {
@@ -360,7 +443,7 @@ html {
 }
 
 .home-btn:hover {
-  color: var(--ci-blue);
+  color: var(--p-primary);
 }
 
 .inquiry-container h2 {
@@ -399,6 +482,13 @@ html {
 
 .kakao-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .kakao-btn {
+  background-color: #f7e600;
+  /* Slightly brighter for dark mode */
+  color: #3b1e1e;
 }
 
 .input-group {
@@ -629,11 +719,14 @@ html {
   text-align: center;
   font-size: 15px;
   font-weight: 800;
-  color: var(--ci-dark);
+  color: var(--p-text-main);
+  /* Changed from ci-dark */
   margin-bottom: 10px;
   display: none;
   padding: 10px;
-  background-color: #f0f4f8;
+  background-color: var(--p-bg-body);
+  /* Changed from hardcoded #f0f4f8 */
+  border: 1px solid var(--p-border);
   border-radius: 8px;
 }
 
@@ -743,18 +836,22 @@ select:focus {
 
 /* [NEW] 통합 약관 박스 스타일 */
 .terms-container {
-  border: 1px solid #ddd;
+  border: 1px solid var(--p-border);
+  /* Changed from #ddd */
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 25px;
-  background-color: #fff;
+  background-color: var(--p-bg-surface);
+  /* Changed from #fff */
 }
 
 /* 전체 동의 헤더 */
 .terms-header {
-  background-color: #f8f9fa;
+  background-color: var(--p-bg-body);
+  /* Changed from hardcoded #f8f9fa */
   padding: 15px 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--p-border);
+  /* Changed from #eee */
 }
 
 .terms-header .agree-all-label {
@@ -786,7 +883,8 @@ select:focus {
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px dashed #eee;
+  border-bottom: 1px dashed var(--p-border);
+  /* Changed from #eee */
 }
 
 .terms-row:last-child {
@@ -797,7 +895,8 @@ select:focus {
   display: flex;
   align-items: center;
   font-size: 14px;
-  color: #555;
+  color: var(--p-text-main);
+  /* Changed from #555 */
   cursor: pointer;
   margin: 0;
   flex: 1;
@@ -814,7 +913,8 @@ select:focus {
 /* 내용보기 버튼 */
 .btn-view-term {
   font-size: 12px;
-  color: #999;
+  color: var(--p-text-sub);
+  /* Changed from #999 */
   background: none;
   border: none;
   text-decoration: underline;
@@ -959,8 +1059,8 @@ select:focus {
   background-color: var(--p-primary);
   color: #fff;
   border: none;
-  flex: 2;
-  /* 다음 버튼 강조 */
+  width: 100%;
+  /* Ensure full width */
 }
 
 .next-btn:hover {
