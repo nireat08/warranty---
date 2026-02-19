@@ -22,6 +22,14 @@ function initTheme() {
         document.body.classList.remove('dark-mode');
         updateThemeIcon(false);
     }
+    updateFooterLogo(document.body.classList.contains('dark-mode'));
+}
+
+function updateFooterLogo(isDark) {
+    const logo = document.getElementById('footerLogo');
+    if (logo) {
+        logo.src = isDark ? './images/Xtron_x_Qualisports_Logo_White.png' : './images/Xtron_x_Qualisports_Logo_Black.png';
+    }
 }
 
 function toggleTheme() {
@@ -29,6 +37,7 @@ function toggleTheme() {
     document.documentElement.classList.toggle('dark-mode', isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     updateThemeIcon(isDark);
+    updateFooterLogo(isDark);
 }
 
 function updateThemeIcon(isDark) {
