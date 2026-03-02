@@ -3,11 +3,9 @@
  * 모든 페이지에서 공통적으로 사용되는 상수와 함수를 정의합니다.
  */
 
-// API URL 상수화 (한 곳에서 관리)
-const API_URL = "https://script.google.com/macros/s/AKfycbyy02EOo87dG4BWco1kbLO3O9BXwFSUKy-olHVwUim_E_07Azl5tl-e40UO1uBqoyeJ/exec";
 
-// [보안] 서버(GAS)와 약속된 비밀 토큰 (GAS 코드의 API_TOKEN과 일치해야 함)
-const API_TOKEN = "QUALI_SECRET_TOKEN_2026";
+const API_URL = "/api/gas-proxy";
+
 
 // Theme Management
 function initTheme() {
@@ -59,17 +57,13 @@ function closeModal(id) {
     if (el) el.style.display = 'none';
 }
 
-// Fetch Wrapper (재시도 로직 및 토큰 자동 첨부 포함)
+// Fetch Wrapper (재시도 로직 포함, 토큰 첨부 로직은 제거됨)
 async function fetchWithRetry(url, options = {}, retries = 3, backoff = 1000) {
-    // URL에 보안 토큰 자동 추가 로직
-    let requestUrl = url;
-    if (!requestUrl.includes("token=")) {
-        const separator = requestUrl.includes('?') ? '&' : '?';
-        requestUrl = requestUrl + separator + "token=" + API_TOKEN;
-    }
+
 
     try {
-        const response = await fetch(requestUrl, options);
+        // 수정된 url을 그대로 fetch에 넘겨줍니다.
+        const response = await fetch(url, options);
         if (!response.ok) throw new Error("Server Busy");
         const json = await response.json();
         return json;
@@ -85,7 +79,6 @@ async function fetchWithRetry(url, options = {}, retries = 3, backoff = 1000) {
             }
 
             await new Promise(resolve => setTimeout(resolve, backoff));
-            // 재귀 호출 시에는 원본 url을 넘김 (requestUrl은 함수 내에서 다시 생성됨)
             return fetchWithRetry(url, options, retries - 1, backoff * 2);
         } else {
             throw error;

@@ -4,3 +4,8 @@
 # 운영체제 임시 파일 무시
 .DS_Store
 Thumbs.db
+
+#환경변수 업로드 금지
+.env
+node_modules/
+.vercel
