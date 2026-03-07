@@ -7,6 +7,7 @@ const RegUI = {
         window.scrollTo(0, 0);
     },
 
+
     updateStepperIndicator: function (step) {
         document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active', 'complete'));
         for (let i = 1; i <= 3; i++) {
@@ -73,8 +74,14 @@ const RegUI = {
         if (loadingArea) loadingArea.style.display = isLoading ? "flex" : "none";
     },
 
+    setOcrLoadingState: function (isLoading) {
+        const ocrLoadingArea = document.getElementById("ocrLoadingArea");
+        if (ocrLoadingArea) ocrLoadingArea.style.display = isLoading ? "flex" : "none";
+    },
+
     applySavedState: function () {
         const data = RegState.formData;
+        if (document.getElementById("serviceAgree")) document.getElementById("serviceAgree").checked = data.service;
         if (document.getElementById("privacyAgree")) document.getElementById("privacyAgree").checked = data.privacy;
         if (document.getElementById("thirdPartyAgree")) document.getElementById("thirdPartyAgree").checked = data.thirdParty;
         if (document.getElementById("transferAgree")) document.getElementById("transferAgree").checked = data.transfer;

@@ -1,5 +1,6 @@
 const RegValidation = {
     step1: function () {
+        if (!RegState.formData.service) { Utils.showAlert("서비스 이용약관에 동의해주세요."); return false; }
         if (!RegState.formData.privacy) { Utils.showAlert("개인정보 수집 및 이용에 동의해주세요."); return false; }
         if (!RegState.formData.thirdParty) { Utils.showAlert("개인정보 제3자 제공에 동의해주세요."); return false; }
         if (!RegState.formData.transfer) { Utils.showAlert("개인정보 국외 이전 동의가 필요합니다."); return false; }

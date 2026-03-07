@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function saveAgreeState() {
+        RegState.formData.service = document.getElementById("serviceAgree").checked;
         RegState.formData.privacy = document.getElementById("privacyAgree").checked;
         RegState.formData.thirdParty = document.getElementById("thirdPartyAgree").checked;
         RegState.formData.transfer = document.getElementById("transferAgree").checked;
@@ -49,17 +50,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // 4. 이벤트 바인딩 - 파일 업로드
     const receiptFile = document.getElementById("receiptFile");
     const previewImg = document.getElementById("imgPreview");
+    const receiptPreviewBox = document.getElementById("step3ReceiptPreviewBox");
+
     if (receiptFile) {
         receiptFile.addEventListener("change", function () {
             if (this.files.length > 0) {
                 if (this.files[0].size > Utils.MAX_FILE_SIZE) {
                     Utils.showAlert("❌ 파일 용량이 3MB를 초과합니다!\n용량을 줄여서 다시 올려주세요.");
-                    this.value = ""; previewImg.style.display = "none"; return;
+                    this.value = "";
+                    if (receiptPreviewBox) receiptPreviewBox.style.display = "none";
+                    return;
                 }
                 const reader = new FileReader();
-                reader.onload = function (e) { previewImg.src = e.target.result; previewImg.style.display = "block"; }
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = "block"; // CSS의 display:none 덮어쓰기
+                    if (receiptPreviewBox) receiptPreviewBox.style.display = "block";
+                }
                 reader.readAsDataURL(this.files[0]);
-            } else { previewImg.style.display = "none"; }
+            } else {
+                if (receiptPreviewBox) receiptPreviewBox.style.display = "none";
+            }
         });
     }
 
@@ -153,6 +164,41 @@ document.addEventListener("DOMContentLoaded", function () {
         btnCheckSerial.addEventListener("click", runSerialCheck);
     }
 
+
+    // 차대번호 사진 첨부 로직 (Step 3 - 영수증 옆에 나란히 위치)
+    const serialImageStep3 = document.getElementById("serialImageStep3");
+    const step3SerialPreviewBox = document.getElementById("step3SerialPreviewBox");
+    const step3SerialPreview = document.getElementById("step3SerialPreview");
+
+    if (serialImageStep3) {
+        serialImageStep3.addEventListener("change", async function (e) {
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0];
+
+                if (file.size > Utils.MAX_FILE_SIZE) {
+                    Utils.showAlert("❌ 파일 용량이 3MB를 초과합니다!\n용량을 줄여서 다시 올려주세요.");
+                    this.value = "";
+                    return;
+                }
+
+                try {
+                    // 압축하여 메모리 상태에 저장 (로컬스토리지 저장 안 함 — Base64는 용량이 큼서)
+                    const compressedBase64 = await Utils.compressImage(file);
+                    RegState.serialImageBase64 = compressedBase64;
+
+                    // 썸네일 표출
+                    if (step3SerialPreview && step3SerialPreviewBox) {
+                        step3SerialPreview.src = compressedBase64;
+                        step3SerialPreviewBox.style.display = "block";
+                    }
+                } catch (error) {
+                    console.error("Image compression error:", error);
+                    Utils.showAlert("사진 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+                }
+            }
+        });
+    }
+
     function runSerialCheck() {
         const val = serialInput.value.trim();
         if (val.length < 1) return Utils.showAlert("차대번호를 입력해주세요.");
@@ -214,13 +260,23 @@ document.addEventListener("DOMContentLoaded", function () {
             const fileInput = document.getElementById("receiptFile");
             if (!RegValidation.final(fileInput)) return;
 
+            // 차대번호 사진 첨부 여부 확인
+            if (!RegState.serialImageBase64) {
+                Utils.showAlert("차대번호 사진를 첨부해주세요.\n(영수증 오른쪽 차대번호 사진 란에 업로드)");
+                return;
+            }
+
             RegUI.setLoadingState(true);
             document.getElementById("waitText").innerText = "잠시만 기다려주세요.";
             window.GLOBAL_RETRY_COUNT = 0;
 
             const payload = { ...RegState.formData };
+            payload.serviceConsent = payload.service;
             payload.marketingConsent = payload.marketing;
             payload.transferConsent = payload.transfer;
+
+            // 차대번호 사진 Base64 헤더 제거 후 payload 삽입
+            payload.serialImageData = RegState.serialImageBase64.split(",")[1];
 
             const file = fileInput.files[0];
             const reader = new FileReader();
@@ -233,11 +289,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 RegAPI.submitForm(payload).then(res => {
                     if (res.result === "success") {
                         RegState.clear();
+                        RegState.serialImageBase64 = null; // 보내고 나면 메모리에서 정리
                         Utils.showAlert("✅ 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function () {
                             window.location.href = "./product_check.html?name=" + encodeURIComponent(payload.userName) + "&phone=" + encodeURIComponent(payload.userPhone);
                         });
                     } else if (res.message.includes("이미 등록된 제품") && window.GLOBAL_RETRY_COUNT > 0) {
                         RegState.clear();
+                        RegState.serialImageBase64 = null;
                         Utils.showAlert("✅ (재접속 성공) 제품 등록이 완료되었습니다!\n등록 내역 확인 페이지로 자동 이동합니다.", function () {
                             window.location.href = "./product_check.html?name=" + encodeURIComponent(payload.userName) + "&phone=" + encodeURIComponent(payload.userPhone);
                         });

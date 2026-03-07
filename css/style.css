@@ -282,6 +282,40 @@ html {
   font-family: 'Paperlogy', sans-serif;
 }
 
+/* 약관/동의서 모달 전용 스타일 */
+.modal-terms-content {
+  white-space: normal;
+}
+
+.modal-terms-content p {
+  margin: 0 0 12px 0;
+  word-break: keep-all;
+}
+
+.modal-terms-content h4 {
+  font-size: 14px;
+  font-weight: 800;
+  margin: 18px 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--p-border);
+  color: var(--p-primary);
+}
+
+.modal-terms-content ul {
+  margin: 6px 0 14px 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.modal-terms-content ul li {
+  margin-bottom: 4px;
+  word-break: keep-all;
+}
+
+.modal-terms-content ul li strong {
+  color: var(--p-text-main);
+}
+
 .modal-footer {
   padding: 15px;
   border-top: 1px solid var(--p-border);
@@ -662,6 +696,56 @@ body.dark-mode .kakao-btn {
   outline: none;
   background-color: var(--p-bg-surface);
   box-shadow: 0 0 0 4px var(--p-shadow);
+}
+
+.check-btn {
+  background-color: var(--p-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-radius-sm);
+  padding: 0 16px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'Paperlogy', sans-serif;
+  transition: var(--t-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.check-btn:hover {
+  background-color: var(--p-primary-hover);
+}
+
+.check-btn:disabled {
+  background-color: var(--p-border);
+  color: var(--p-text-ghost);
+  cursor: not-allowed;
+}
+
+.ocr-camera-btn {
+  position: absolute;
+  top: 50%;
+  right: 82px;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  background-color: var(--p-bg-body);
+  color: var(--p-text-main);
+  border: 1px solid var(--p-border);
+  border-radius: var(--r-radius-sm);
+  padding: 0;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--t-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.ocr-camera-btn:hover {
+  background-color: var(--p-border);
 }
 
 .search-btn {
@@ -1300,8 +1384,8 @@ select:focus {
 
 .input-wrapper input {
   width: 100%;
-  padding-right: 90px;
-  /* 버튼 공간 확보 */
+  padding-right: 125px;
+  /* (조회버튼 + 카메라버튼) 공간 확보 */
 }
 
 /* [수정] 조회 버튼 (입력창 내부 우측 배치) */
@@ -1435,6 +1519,34 @@ select:focus {
   to {
     transform: translateY(5px);
   }
+}
+
+/* --- OCR Button & Input Layout Fix --- */
+.input-wrapper {
+  position: relative !important;
+  display: block !important;
+}
+
+.input-wrapper input#serialNo {
+  width: 100% !important;
+  padding-right: 130px !important;
+  box-sizing: border-box !important;
+}
+
+.input-wrapper .check-btn {
+  position: absolute !important;
+  top: 50% !important;
+  right: 6px !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+}
+
+.input-wrapper .ocr-camera-btn {
+  position: absolute !important;
+  top: 50% !important;
+  right: 82px !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
 }
 
 @media (max-width: 500px) {

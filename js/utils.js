@@ -24,5 +24,45 @@ const Utils = {
 
     sanitizeNumeric: function (val) {
         return val.replace(/[^0-9]/g, '');
+    },
+
+    compressImage: function (fileOrDataUrl) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // 리사이즈 (가로 최대 800px로 제한하여 용량 최적화)
+                const MAX_WIDTH = 800;
+                let width = img.width;
+                let height = img.height;
+                if (width > MAX_WIDTH) {
+                    height = Math.floor(height * (MAX_WIDTH / width));
+                    width = MAX_WIDTH;
+                }
+                canvas.width = width;
+                canvas.height = height;
+
+                // 백그라운드를 흰색으로 채움 (투명 PNG 방지)
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, width, height);
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // JPEG 포맷으로 압축 (품질 0.7) 설정하여 Base64 반환
+                resolve(canvas.toDataURL('image/jpeg', 0.7));
+            };
+            img.onerror = reject;
+
+            if (typeof fileOrDataUrl === 'string') {
+                img.src = fileOrDataUrl;
+            } else {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(fileOrDataUrl);
+            }
+        });
     }
 };

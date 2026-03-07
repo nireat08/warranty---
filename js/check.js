@@ -47,12 +47,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    let isSearching = false; // 중복 호출 방지 플래그
+
     function searchData() {
         const name = nameInput.value.trim();
         const phone = phoneInput.value.trim();
 
         // [수정] 기본 alert 대신 커스텀 모달 사용
         if (!name || !phone) return showAlert("이름과 연락처를 모두 입력해주세요.");
+
+        // 이미 조회 중이면 중복 호출 무시
+        if (isSearching) return;
+        isSearching = true;
 
         resultContainer.innerHTML = "";
         countMsg.style.display = "none";
@@ -67,9 +73,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 loadingArea.style.display = "none";
                 btnSearch.disabled = false;
                 btnSearch.style.backgroundColor = ""; // 인라인 스타일 제거하여 CSS 기본값으로 복구
+                isSearching = false;
 
                 if (res.status === "success") {
                     const list = res.data;
+                    resultContainer.innerHTML = ""; // 렌더링 직전 한번 더 초기화 (동시 호출 방어)
                     countMsg.style.display = "block";
                     countMsg.innerText = `총 ${list.length}건의 등록 내역이 있습니다.`;
                     list.forEach((item, index) => createCard(item, list.length - index, list.length));
@@ -82,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 loadingArea.style.display = "none";
                 btnSearch.disabled = false;
                 btnSearch.style.backgroundColor = ""; // 인라인 스타일 제거하여 CSS 기본값으로 복구
+                isSearching = false;
                 msgBox.style.display = "block";
                 msgBox.innerHTML = '<span class="error-text">서버 통신 오류가 발생했습니다.<br>잠시 후 다시 시도해주세요.</span>';
             });
@@ -165,8 +174,16 @@ document.addEventListener("DOMContentLoaded", function () {
         fetchWithRetry(API_URL, {
             method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(logData)
         }, 2, 500)
-            .then(() => { window.location.href = targetLink; })
-            .catch(() => { window.location.href = targetLink; });
+            .then(() => { window.open(targetLink, "_blank"); })
+            .catch(() => { window.open(targetLink, "_blank"); })
+            .finally(() => {
+                // 새 창으로 이동 후 버튼을 다시 클릭 가능 상태로 복원
+                setTimeout(() => {
+                    btnElement.innerText = "🎉 특별 구매 혜택 바로가기";
+                    btnElement.style.backgroundColor = "";
+                    btnElement.style.pointerEvents = "auto";
+                }, 1000);
+            });
     }
 
     function formatDate(d) {
