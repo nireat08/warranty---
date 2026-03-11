@@ -9,6 +9,8 @@ export default async function handler(req, res) {
   const GAS_URL = process.env.GAS_URL;
   const API_TOKEN = process.env.API_TOKEN;
   const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
+  const RATE_LIMIT = parseInt(process.env.RATE_LIMIT || "50");
+  const RATE_LIMIT_WINDOW = parseInt(process.env.RATE_LIMIT_WINDOW || "60");
 
   // 1. Origin 검증
   const origin = req.headers.origin || req.headers.referer;
@@ -26,10 +28,10 @@ export default async function handler(req, res) {
     const current = await redis.incr(identifier);
     
     if (current === 1) {
-      await redis.expire(identifier, 60);
+      await redis.expire(identifier, RATE_LIMIT_WINDOW);
     }
 
-    if (current > 50) {
+    if (current > RATE_LIMIT) {
       return res.status(429).json({ result: "error", message: "Too Many Requests" });
     }
   } catch (redisError) {
