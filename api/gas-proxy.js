@@ -39,6 +39,31 @@ export default async function handler(req, res) {
     console.error('Redis Rate Limit Error:', redisError);
   }
 
+  // 3. reCAPTCHA 검증
+  const recaptchaToken = req.headers['x-recaptcha-token'];
+  if (!recaptchaToken) {
+    return res.status(403).json({ result: "error", message: "Forbidden: Missing reCAPTCHA token" });
+  }
+
+  try {
+    const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify`;
+    const verifyResponse = await fetch(verifyUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
+    });
+    const verifyData = await verifyResponse.json();
+
+    if (!verifyData.success || verifyData.score < 0.5) {
+      console.error('reCAPTCHA verification failed:', verifyData);
+      return res.status(403).json({ result: "error", message: "Forbidden: 비정상적인 접근이 감지되었습니다." });
+    }
+  } catch (error) {
+    console.error('reCAPTCHA error:', error);
+    return res.status(500).json({ result: "error", message: "reCAPTCHA 검증 중 오류가 발생했습니다." });
+  }
+
   try {
     const url = new URL(GAS_URL);
     url.searchParams.append('token', API_TOKEN);

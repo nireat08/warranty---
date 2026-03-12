@@ -5,6 +5,13 @@
 
 
 const API_URL = "/api/gas-proxy";
+const RECAPTCHA_SITE_KEY = "6Lc0MIgsAAAAAAW9nXcixoBAARNh4-xwxWIXOkRi"; 
+
+// Google reCAPTCHA v3 스크립트 동적 로드
+const recaptchaScript = document.createElement('script');
+recaptchaScript.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
+document.head.appendChild(recaptchaScript);
+
 
 
 // Theme Management
