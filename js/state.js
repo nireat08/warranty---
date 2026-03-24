@@ -22,11 +22,11 @@ const RegState = {
             delete dataToSave[key];
         });
 
-        localStorage.setItem('regFormData', JSON.stringify(dataToSave));
+        sessionStorage.setItem('regFormData', JSON.stringify(dataToSave));
     },
 
     load: function () {
-        const saved = localStorage.getItem('regFormData');
+        const saved = sessionStorage.getItem('regFormData');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
@@ -42,7 +42,7 @@ const RegState = {
     },
 
     clear: function () {
-        localStorage.removeItem('regFormData');
+        sessionStorage.removeItem('regFormData');
         this.formData = {
             service: false, privacy: false, thirdParty: false, transfer: false, marketing: false,
             serialNo: '', userName: '', userPhone: '', product: '', storeName: '', storeCode: ''
