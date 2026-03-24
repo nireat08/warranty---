@@ -68,7 +68,11 @@ document.addEventListener("DOMContentLoaded", function () {
         btnSearch.disabled = true;
         btnSearch.style.backgroundColor = "#eee";
 
-        fetchWithRetry(API_URL + "?type=search&name=" + encodeURIComponent(name) + "&phone=" + encodeURIComponent(phone), {}, 3)
+        getRecaptchaToken('searchData').then(token => {
+            document.getElementById("waitText").innerText = "";
+            const headers = { 'x-recaptcha-token': token };
+            return fetchWithRetry(API_URL + "?type=search&name=" + encodeURIComponent(name) + "&phone=" + encodeURIComponent(phone), { headers }, 3);
+        })
             .then(res => {
                 loadingArea.style.display = "none";
                 btnSearch.disabled = false;
@@ -91,8 +95,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 btnSearch.disabled = false;
                 btnSearch.style.backgroundColor = ""; // 인라인 스타일 제거하여 CSS 기본값으로 복구
                 isSearching = false;
-                msgBox.style.display = "block";
-                msgBox.innerHTML = '<span class="error-text">서버 통신 오류가 발생했습니다.<br>잠시 후 다시 시도해주세요.</span>';
+                if (e.message && (e.message.includes("reCAPTCHA") || e.message.includes("보안 토큰"))) {
+                    showAlert(e.message);
+                } else {
+                    msgBox.style.display = "block";
+                    msgBox.innerHTML = '<span class="error-text">서버 통신 오류가 발생했습니다.<br>잠시 후 다시 시도해주세요.</span>';
+                }
             });
     }
 
@@ -171,9 +179,16 @@ document.addEventListener("DOMContentLoaded", function () {
             model: data.product
         };
 
-        fetchWithRetry(API_URL, {
-            method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(logData)
-        }, 2, 500)
+        getRecaptchaToken('promoClick').then(token => {
+            return fetchWithRetry(API_URL, {
+                method: "POST", 
+                headers: { 
+                    "Content-Type": "text/plain;charset=utf-8",
+                    "x-recaptcha-token": token
+                }, 
+                body: JSON.stringify(logData)
+            }, 2, 500);
+        })
             .then(() => { window.open(targetLink, "_blank"); })
             .catch(() => { window.open(targetLink, "_blank"); })
             .finally(() => {
