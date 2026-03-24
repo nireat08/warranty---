@@ -39,15 +39,39 @@ const RegAPI = {
 
     submitForm: async function (payload) {
         const token = await getRecaptchaToken('submitForm');
-        const headers = { 
-            "Content-Type": "text/plain;charset=utf-8",
-            "x-recaptcha-token": token
-        };
         
-        return fetchWithRetry(API_URL, {
+        // 1단계: Vercel에 업로드 티켓(서명) 요청
+        const ticketRes = await fetchWithRetry(API_URL, {
             method: "POST",
-            headers: headers,
-            body: JSON.stringify(payload)
-        }, 5, 1000);
+            headers: { 
+                "Content-Type": "application/json",
+                "x-recaptcha-token": token
+            },
+            body: JSON.stringify({ action: "getUploadTicket" })
+        }, 3, 1000);
+
+        if (ticketRes.result !== "success" || !ticketRes.gasUrl) {
+            throw new Error("업로드 티켓 발급에 실패했습니다.");
+        }
+
+        // 2단계: 티켓을 받은 후 FormData를 구성하여 구글 스크립트로 직접(Direct) 전송
+        const formData = new FormData();
+        for (const key in payload) {
+            formData.append(key, payload[key]);
+        }
+        formData.append("timestamp", ticketRes.timestamp);
+        formData.append("token", ticketRes.signature);
+
+        try {
+            const response = await fetch(ticketRes.gasUrl, {
+                method: "POST",
+                body: formData,
+                redirect: "follow" // 구글의 302 리다이렉트 대응 (매우 중요)
+            });
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            throw new Error("서버 전송 중 오류가 발생했습니다.");
+        }
     }
 };

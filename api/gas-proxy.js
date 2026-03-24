@@ -1,4 +1,5 @@
 import { Redis } from '@upstash/redis'
+import crypto from 'crypto'
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -65,6 +66,24 @@ export default async function handler(req, res) {
   }
 
   try {
+    let bodyData = req.body;
+    if (req.method === 'POST' && typeof req.body === 'string') {
+      try { bodyData = JSON.parse(req.body); } catch (e) {}
+    }
+
+    if (req.method === 'POST' && bodyData && bodyData.action === 'getUploadTicket') {
+      const timestamp = Date.now().toString();
+      const rawSignature = timestamp + API_TOKEN;
+      const signature = crypto.createHash('sha256').update(rawSignature).digest('hex');
+      
+      return res.status(200).json({
+        result: "success",
+        gasUrl: GAS_URL,
+        timestamp: timestamp,
+        signature: signature
+      });
+    }
+
     const url = new URL(GAS_URL);
     url.searchParams.append('token', API_TOKEN);
 

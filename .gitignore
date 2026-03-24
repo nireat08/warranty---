@@ -9,3 +9,6 @@ Thumbs.db
 .env
 node_modules/
 .vercel
+
+#임시 gas코드
+gas.txt
